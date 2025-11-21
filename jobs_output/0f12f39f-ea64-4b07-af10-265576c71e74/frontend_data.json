@@ -1,0 +1,36 @@
+{
+  "referinta": "fsvss",
+  "client": {
+    "nume": "fwfwe",
+    "telefon": "0787340457",
+    "email": "paul.bradeanu@gmail.com",
+    "localitate": "Cojocnei 8"
+  },
+  "sistemConstructiv": {
+    "tipSistem": "CLT",
+    "gradPrefabricare": "Panouri",
+    "tipFundatie": "Placă",
+    "tipAcoperis": "Flachdach",
+    "materialPereti": ""
+  },
+  "materialeFinisaj": {
+    "nivelOferta": "Casă completă",
+    "finisajInterior": "Tencuială",
+    "fatada": "Tencuială",
+    "tamplarie": "Lemn",
+    "materialAcoperis": "Membrană",
+    "tipTermoizolatie": "",
+    "grosimeTermoizolatie": 0,
+    "invelitoare": ""
+  },
+  "performanta": {
+    "nivelEnergetic": "Standard",
+    "incalzire": "Electric",
+    "ventilatie": true
+  },
+  "logistica": {
+    "accesSantier": "Dificil",
+    "teren": "Pantă mare",
+    "utilitati": true
+  }
+}

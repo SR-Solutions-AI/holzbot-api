@@ -1,0 +1,36 @@
+{
+  "referinta": "ewfefs",
+  "client": {
+    "nume": "vsevs",
+    "telefon": "0787340457",
+    "email": "paul.bradeanu@gmail.com",
+    "localitate": "Cojocnei 8"
+  },
+  "sistemConstructiv": {
+    "tipSistem": "Massivholz",
+    "gradPrefabricare": "Panouri",
+    "tipFundatie": "Soclu",
+    "tipAcoperis": "Flachdach",
+    "materialPereti": ""
+  },
+  "materialeFinisaj": {
+    "nivelOferta": "Casă completă",
+    "finisajInterior": "Lemn",
+    "fatada": "Fibrociment",
+    "tamplarie": "PVC",
+    "materialAcoperis": "Tablă",
+    "tipTermoizolatie": "",
+    "grosimeTermoizolatie": 0,
+    "invelitoare": ""
+  },
+  "performanta": {
+    "nivelEnergetic": "KfW 40",
+    "incalzire": "Electric",
+    "ventilatie": true
+  },
+  "logistica": {
+    "accesSantier": "Mediu",
+    "teren": "Pantă ușoară",
+    "utilitati": true
+  }
+}

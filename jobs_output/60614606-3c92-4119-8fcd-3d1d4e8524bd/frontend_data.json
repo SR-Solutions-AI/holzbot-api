@@ -1,0 +1,36 @@
+{
+  "referinta": "cascsa",
+  "client": {
+    "nume": "cdscsd",
+    "telefon": "0787340457",
+    "email": "paul.bradeanu@gmail.com",
+    "localitate": "Cojocnei 8"
+  },
+  "sistemConstructiv": {
+    "tipSistem": "Holzrahmen",
+    "gradPrefabricare": "Module",
+    "tipFundatie": "Soclu",
+    "tipAcoperis": "Fußwalmdach",
+    "materialPereti": ""
+  },
+  "materialeFinisaj": {
+    "nivelOferta": "Casă completă",
+    "finisajInterior": "Lemn",
+    "fatada": "Lemn",
+    "tamplarie": "Lemn-Aluminiu",
+    "materialAcoperis": "Membrană",
+    "tipTermoizolatie": "",
+    "grosimeTermoizolatie": 0,
+    "invelitoare": ""
+  },
+  "performanta": {
+    "nivelEnergetic": "KfW 40",
+    "incalzire": "Electric",
+    "ventilatie": true
+  },
+  "logistica": {
+    "accesSantier": "Mediu",
+    "teren": "Pantă ușoară",
+    "utilitati": false
+  }
+}

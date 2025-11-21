@@ -1,0 +1,36 @@
+{
+  "referinta": "htrth",
+  "client": {
+    "nume": "drgd",
+    "telefon": "0787340457",
+    "email": "paul.bradeanu@gmail.com",
+    "localitate": "Cojocnei 8"
+  },
+  "sistemConstructiv": {
+    "tipSistem": "Massivholz",
+    "gradPrefabricare": "Montaj pe șantier",
+    "tipFundatie": "Soclu",
+    "tipAcoperis": "Flachdach",
+    "materialPereti": ""
+  },
+  "materialeFinisaj": {
+    "nivelOferta": "Casă completă",
+    "finisajInterior": "Mix",
+    "fatada": "Fibrociment",
+    "tamplarie": "PVC",
+    "materialAcoperis": "Membrană",
+    "tipTermoizolatie": "",
+    "grosimeTermoizolatie": 0,
+    "invelitoare": ""
+  },
+  "performanta": {
+    "nivelEnergetic": "KfW 40+",
+    "incalzire": "Electric",
+    "ventilatie": true
+  },
+  "logistica": {
+    "accesSantier": "Mediu",
+    "teren": "Pantă mare",
+    "utilitati": false
+  }
+}

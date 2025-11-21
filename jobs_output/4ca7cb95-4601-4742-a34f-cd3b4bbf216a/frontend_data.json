@@ -1,0 +1,36 @@
+{
+  "referinta": "eewwe",
+  "client": {
+    "nume": "veww",
+    "telefon": "0787340457",
+    "email": "paul.bradeanu@gmail.com",
+    "localitate": "Cojocnei 8"
+  },
+  "sistemConstructiv": {
+    "tipSistem": "Holzrahmen",
+    "gradPrefabricare": "Montaj pe șantier",
+    "tipFundatie": "Placă",
+    "tipAcoperis": "Flachdach",
+    "materialPereti": ""
+  },
+  "materialeFinisaj": {
+    "nivelOferta": "Casă completă",
+    "finisajInterior": "Fibrociment",
+    "fatada": "Mix",
+    "tamplarie": "PVC",
+    "materialAcoperis": "Membrană",
+    "tipTermoizolatie": "",
+    "grosimeTermoizolatie": 0,
+    "invelitoare": ""
+  },
+  "performanta": {
+    "nivelEnergetic": "KfW 40+",
+    "incalzire": "Electric",
+    "ventilatie": true
+  },
+  "logistica": {
+    "accesSantier": "Dificil",
+    "teren": "Pantă mare",
+    "utilitati": false
+  }
+}

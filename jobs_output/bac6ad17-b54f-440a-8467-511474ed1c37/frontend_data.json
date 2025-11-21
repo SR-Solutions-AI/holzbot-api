@@ -1,0 +1,32 @@
+{
+  "referinta": "grudger",
+  "client": {
+    "nume": "grege",
+    "telefon": "0787340457",
+    "email": "paul.bradeanu@gmail.com",
+    "localitate": "Cojocnei 8"
+  },
+  "sistemConstructiv": {
+    "tipSistem": "Massivholz",
+    "gradPrefabricare": "Montaj pe șantier",
+    "tipFundatie": "Soclu",
+    "tipAcoperis": "Paralleldach"
+  },
+  "materialeFinisaj": {
+    "nivelOferta": "Casă completă",
+    "finisajInterior": "Mix",
+    "fatada": "Mix",
+    "tamplarie": "Aluminiu",
+    "materialAcoperis": "Membrană"
+  },
+  "performanta": {
+    "nivelEnergetic": "KfW 40+",
+    "incalzire": "Electric",
+    "ventilatie": true
+  },
+  "logistica": {
+    "accesSantier": "Dificil",
+    "teren": "Pantă mare",
+    "utilitati": true
+  }
+}

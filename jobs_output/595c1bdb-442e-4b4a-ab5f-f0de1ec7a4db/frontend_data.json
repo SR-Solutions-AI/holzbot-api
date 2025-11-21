@@ -1,0 +1,36 @@
+{
+  "referinta": "csacas",
+  "client": {
+    "nume": "cascas",
+    "telefon": "0787340457",
+    "email": "paul.bradeanu@gmail.com",
+    "localitate": "Cojocnei 8"
+  },
+  "sistemConstructiv": {
+    "tipSistem": "Massivholz",
+    "gradPrefabricare": "Module",
+    "tipFundatie": "Soclu",
+    "tipAcoperis": "Flachdach",
+    "materialPereti": ""
+  },
+  "materialeFinisaj": {
+    "nivelOferta": "Casă completă",
+    "finisajInterior": "Tencuială",
+    "fatada": "Lemn",
+    "tamplarie": "PVC",
+    "materialAcoperis": "Membrană",
+    "tipTermoizolatie": "",
+    "grosimeTermoizolatie": 0,
+    "invelitoare": ""
+  },
+  "performanta": {
+    "nivelEnergetic": "KfW 40",
+    "incalzire": "Electric",
+    "ventilatie": false
+  },
+  "logistica": {
+    "accesSantier": "Mediu",
+    "teren": "Pantă mare",
+    "utilitati": false
+  }
+}

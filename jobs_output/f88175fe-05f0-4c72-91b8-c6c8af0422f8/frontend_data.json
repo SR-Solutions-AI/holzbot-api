@@ -1,0 +1,36 @@
+{
+  "referinta": "CASA CU SCARI AN GERMANA",
+  "client": {
+    "nume": "grhret",
+    "telefon": "0787340457",
+    "email": "paul.bradeanu@gmail.com",
+    "localitate": "Cojocnei 8"
+  },
+  "sistemConstructiv": {
+    "tipSistem": "Massivholz",
+    "gradPrefabricare": "Montaj pe șantier",
+    "tipFundatie": "Soclu",
+    "tipAcoperis": "Flachdach",
+    "materialPereti": ""
+  },
+  "materialeFinisaj": {
+    "nivelOferta": "Casă completă",
+    "finisajInterior": "Tencuială",
+    "fatada": "Mix",
+    "tamplarie": "Aluminiu",
+    "materialAcoperis": "Membrană",
+    "tipTermoizolatie": "",
+    "grosimeTermoizolatie": 0,
+    "invelitoare": ""
+  },
+  "performanta": {
+    "nivelEnergetic": "KfW 55",
+    "incalzire": "Pompa de căldură",
+    "ventilatie": false
+  },
+  "logistica": {
+    "accesSantier": "Mediu",
+    "teren": "Pantă ușoară",
+    "utilitati": false
+  }
+}
