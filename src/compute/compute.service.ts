@@ -183,16 +183,15 @@ export class ComputeService {
 
     this.logger.log(`[${offerId}] Spawning Python process...`);
 
-    const pythonProjectRoot = path.resolve(process.cwd(), '../engine/new');
+    const pythonProjectRoot = path.resolve(process.cwd(), '../engine');
     if (!fs.existsSync(pythonProjectRoot)) {
       throw new Error(`Python root not found at ${pythonProjectRoot}`);
     }
 
     const venvCandidates = [
-      path.join(pythonProjectRoot, 'runner', 'venv', 'bin', 'python'),
-      path.join(pythonProjectRoot, 'runner', '.venv', 'bin', 'python'),
       path.join(pythonProjectRoot, 'venv', 'bin', 'python'),
       path.join(pythonProjectRoot, '.venv', 'bin', 'python'),
+      path.join(pythonProjectRoot, 'bin', 'python'),
     ];
 
     let pythonCmd = 'python3';
@@ -215,7 +214,7 @@ export class ComputeService {
 const pythonProcess = spawn(
   pythonCmd,
   [
-    '-m', 'runner.orchestrator', 
+    '-m', 'orchestrator', 
     inputFilePath, 
     '--job-id', offerId
   ],
