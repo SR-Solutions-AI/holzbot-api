@@ -1,10 +1,8 @@
 import {
   Controller,
   Post,
-  Get,
-  Body,
+  Body, // Get a fost scos daca nu mai e folosit aici
   Param,
-  Query,
   Req,
   UseGuards,
   BadRequestException,
@@ -66,30 +64,4 @@ export class ComputeController {
   }
 }
 
-/**
- * Controller separat pentru /calc-events
- * (polling în timpul procesării)
- */
-@Controller('calc-events')
-@UseGuards(AnyAuthGuard)
-export class CalcEventsPollingController {
-  constructor(private readonly computeService: ComputeService) {}
-
-  /**
-   * GET /calc-events?run_id=xxx&sinceId=yyy
-   * Pentru polling în timpul procesării (live)
-   */
-  @Get()
-  async getEvents(
-    @Req() req: any,
-    @Query('run_id') runId?: string,
-    @Query('sinceId') sinceId?: string
-  ) {
-    const userId = req.user?.id;
-    if (!userId) throw new BadRequestException('User ID missing');
-    if (!runId) return { items: [] };
-
-    const since = sinceId ? parseInt(sinceId, 10) : undefined;
-    return this.computeService.listEvents(userId, runId, since);
-  }
-}
+// ❌ CLASA CalcEventsPollingController A FOST ștearsă DE AICI pentru a evita conflictul

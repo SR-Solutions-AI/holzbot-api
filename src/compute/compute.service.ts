@@ -100,8 +100,7 @@ export class ComputeService {
     }
   }
 
-  /** * Helper: Urcă o imagine locală în Supabase și returnează URL-ul public ȘI calea de storage 
-   */
+  /** Helper: Urcă o imagine locală în Supabase și returnează URL-ul public ȘI calea de storage */
   private async uploadFileToSupabase(offerId: string, filePath: string): Promise<{ publicUrl: string, storagePath: string } | null> {
     try {
       if (!fs.existsSync(filePath)) return null;
@@ -125,7 +124,7 @@ export class ComputeService {
     }
   }
 
-  // ✅ Modificare: Primim tenantId ca argument
+  // ✅ Modificare: Suport pentru fișiere multiple + DEDUPLICARE
   private async prepareAndSpawn(offerId: string, runId: string, tenantId: string) {
     const { data: stepsData } = await supa
       .from('offer_steps')
@@ -136,22 +135,51 @@ export class ComputeService {
     stepsData?.forEach(s => { aggregatedSteps[s.step_key] = s.data; });
     const frontendJson = mapStepsToFrontendData(aggregatedSteps);
 
+    // Luăm fișierele sortate descrescător după dată (cele mai noi primele)
     const { data: files } = await supa
       .from('offer_files')
       .select('*')
       .eq('offer_id', offerId)
       .order('created_at', { ascending: false });
 
-    const planFile = files?.find(
+    // 1. Filtrăm doar fișierele relevante (planuri/imagini/pdf)
+    const rawPlanFiles = files?.filter(
       f => f.meta?.kind === 'planArhitectural' || 
            f.meta?.mime?.startsWith('image/') || 
            f.meta?.mime === 'application/pdf'
     );
 
-    if (!planFile) throw new Error('No architectural plan found in uploads.');
+    if (!rawPlanFiles || rawPlanFiles.length === 0) throw new Error('No architectural plan found in uploads.');
+
+    // ✅ FIX: Deduplicare pe baza numelui de fișier (păstrăm doar primul găsit, adică cel mai recent)
+    // Folosim un Map unde cheia este numele fișierului. 
+    // Deoarece iterăm prin lista sortată "cel mai nou primul", prima apariție câștigă.
+    const uniqueFilesMap = new Map<string, any>();
+    
+    for (const f of rawPlanFiles) {
+      // Folosim numele original din meta sau un fallback la storage path
+      const filename = f.meta?.filename || path.basename(f.storage_path);
+      
+      if (!uniqueFilesMap.has(filename)) {
+        uniqueFilesMap.set(filename, f);
+      }
+    }
+
+    // Convertim mapa înapoi în listă pentru procesare
+    const planFiles = Array.from(uniqueFilesMap.values());
+
+    this.logger.log(`[${offerId}] Found ${rawPlanFiles.length} raw files. Processing ${planFiles.length} unique files.`);
 
     const jobDir = path.resolve(process.cwd(), 'jobs_output', offerId);
     if (!fs.existsSync(jobDir)) fs.mkdirSync(jobDir, { recursive: true });
+
+    // ✅ FIX: Creăm un folder dedicat pentru input-uri multiple
+    const inputsDir = path.join(jobDir, 'inputs');
+    if (fs.existsSync(inputsDir)) {
+        // Curățăm directorul de input-uri vechi dacă există (pentru re-run)
+        fs.rmSync(inputsDir, { recursive: true, force: true });
+    }
+    fs.mkdirSync(inputsDir, { recursive: true });
 
     const jsonPath = path.join(jobDir, 'frontend_data.json');
     fs.writeFileSync(jsonPath, JSON.stringify(frontendJson, null, 2), 'utf-8');
@@ -159,29 +187,40 @@ export class ComputeService {
     // ✅ FIX: Pregătim JSON-ul ca string pentru Python
     const frontendDataJsonString = JSON.stringify(frontendJson);
     this.logger.log(`[${offerId}] 📊 Frontend data prepared: ${Object.keys(frontendJson).join(', ')}`);
-  this.logger.log(`[${offerId}] 📊 Data length: ${frontendDataJsonString.length} chars`);
-    this.logger.log(`[${offerId}] Frontend data prepared: ${Object.keys(frontendJson).join(', ')}`);
+    this.logger.log(`[${offerId}] 📊 Data length: ${frontendDataJsonString.length} chars`);
 
-    const { data: fileBlob, error: dlError } = await supa.storage
-      .from(BUCKET)
-      .download(planFile.storage_path);
+    // ✅ FIX: Descărcăm TOATE fișierele UNICE în folderul inputs
+    let downloadedCount = 0;
+    for (let i = 0; i < planFiles.length; i++) {
+        const f = planFiles[i];
+        const { data: fileBlob, error: dlError } = await supa.storage
+          .from(BUCKET)
+          .download(f.storage_path);
 
-    if (dlError || !fileBlob) {
-      throw new Error(`Storage download failed: ${dlError?.message}`);
+        if (dlError || !fileBlob) {
+           this.logger.error(`Failed to download file ${f.storage_path}: ${dlError?.message}`);
+           continue;
+        }
+
+        const buffer = Buffer.from(await fileBlob.arrayBuffer());
+        let ext = 'png';
+        if (f.meta?.filename) {
+          ext = f.meta.filename.split('.').pop() || 'png';
+        } else if (f.meta?.mime === 'application/pdf') {
+          ext = 'pdf';
+        }
+
+        // Salvăm fișierele cu nume unice (input_0.jpg, input_1.png etc.)
+        const inputFilePath = path.join(inputsDir, `input_${i}.${ext}`);
+        fs.writeFileSync(inputFilePath, buffer);
+        downloadedCount++;
     }
 
-    const buffer = Buffer.from(await fileBlob.arrayBuffer());
-    let ext = 'png';
-    if (planFile.meta?.filename) {
-      ext = planFile.meta.filename.split('.').pop() || 'png';
-    } else if (planFile.meta?.mime === 'application/pdf') {
-      ext = 'pdf';
+    if (downloadedCount === 0) {
+        throw new Error('Failed to download any plan files locally.');
     }
 
-    const inputFilePath = path.join(jobDir, `input_plan.${ext}`);
-    fs.writeFileSync(inputFilePath, buffer);
-
-    this.logger.log(`[${offerId}] Spawning Python process...`);
+    this.logger.log(`[${offerId}] Spawning Python process with ${downloadedCount} input files...`);
 
     const pythonProjectRoot = path.resolve(process.cwd(), '../engine');
     if (!fs.existsSync(pythonProjectRoot)) {
@@ -211,25 +250,26 @@ export class ComputeService {
     }
 
     // ✅ FOLOSIM ENV VAR pentru a evita limitările argv
-const pythonProcess = spawn(
-  pythonCmd,
-  [
-    '-m', 'orchestrator', 
-    inputFilePath, 
-    '--job-id', offerId
-  ],
-  {
-    cwd: pythonProjectRoot,
-    env: { 
-      ...process.env, 
-      PYTHONUNBUFFERED: '1', 
-      PYTHONPATH: pythonProjectRoot,
-      FRONTEND_DATA_JSON: frontendDataJsonString  // ✅ CHEIA MAGICĂ!
-    }
-  }
-);
+    // ✅ FIX: Trimitem calea către DIRECTORY-ul 'inputs' în loc de un singur fișier
+    const pythonProcess = spawn(
+      pythonCmd,
+      [
+        '-m', 'orchestrator', 
+        inputsDir, // Pasăm directorul cu toate fișierele
+        '--job-id', offerId
+      ],
+      {
+        cwd: pythonProjectRoot,
+        env: { 
+          ...process.env, 
+          PYTHONUNBUFFERED: '1', 
+          PYTHONPATH: pythonProjectRoot,
+          FRONTEND_DATA_JSON: frontendDataJsonString  // ✅ CHEIA MAGICĂ!
+        }
+      }
+    );
 
-this.logger.log(`[${offerId}] Spawning with ENV data (${frontendDataJsonString.length} chars)`);
+    this.logger.log(`[${offerId}] Spawning with ENV data (${frontendDataJsonString.length} chars)`);
 
     // =========================================================
     // ✅ ASCULTARE EVENIMENTE UI + SALVARE ÎN DB
