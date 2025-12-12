@@ -34,7 +34,7 @@ export class ValidatePlanController {
   async validate(@Body() body: { fileUrl?: string; storagePath?: string; mimeType: string }, @Res() res: Response) {
     try {
       let { fileUrl } = body;
-      const { storagePath, mimeType } = body;
+      const { storagePath, mimeType } = body; // storagePath este esențial pentru ștergere
 
       console.log(`🔍 Validate Request: Path=${storagePath}, Mime=${mimeType}`);
 
@@ -77,8 +77,29 @@ export class ValidatePlanController {
             const jsonStr = lines[lines.length - 1];
             const result = JSON.parse(jsonStr);
             console.log(`✅ Validator Result:`, result);
+
+            // --- FIX CRITIC: ȘTERGEREA FIȘIERULUI NEVALIDAT ---
+            if (result.valid === false && storagePath) {
+                // Ștergem fișierul din Supabase Storage.
+                // Folosim .then/.catch pentru a nu bloca răspunsul HTTP.
+                this.supabase
+                    .storage
+                    .from(BUCKET)
+                    .remove([storagePath])
+                    .then(({ error: deleteError }) => {
+                        if (deleteError) {
+                            console.error(`⚠️ Failed to delete invalid file at ${storagePath}:`, deleteError.message);
+                        } else {
+                            console.log(`🗑️ Successfully deleted invalid file: ${storagePath}`);
+                        }
+                    })
+                    .catch(e => console.error(`⚠️ Delete Promise Rejected:`, e));
+            }
+            // --- END FIX ---
+
             return res.status(HttpStatus.OK).json(result);
         } catch (e) {
+            console.error('❌ JSON Parse Error:', e);
             return res.status(HttpStatus.OK).json({ valid: true, reason: 'Parse error' });
         }
       });
